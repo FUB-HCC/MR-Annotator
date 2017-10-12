@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VR.WSA;
+using ff.utils;
 
-public class WorldCursor : MonoBehaviour {
+public class WorldCursor : Singleton<WorldCursor> {
     public enum ManipulationMode
     {
         MODE_LOOK,
@@ -33,14 +34,16 @@ public class WorldCursor : MonoBehaviour {
         }
         set
         {
-            GameObject surface = GameObject.Find("SpatialSurface");
+            GameObject surface = GameObject.Find("SpatialSurfaceManager");
             if(mode == ManipulationMode.MODE_MOVE && value== ManipulationMode.MODE_LOOK)
             {
-                surface.SetActive(false);
+                surface.GetComponent<SpatialMappingRenderer>().renderState = SpatialMappingRenderer.RenderState.Occlusion;
+                surface.GetComponent<SpatialMappingCollider>().enabled = false;
             }
             if (mode == ManipulationMode.MODE_LOOK && value == ManipulationMode.MODE_MOVE)
             {
-                surface.SetActive(true);
+                surface.GetComponent<SpatialMappingRenderer>().renderState = SpatialMappingRenderer.RenderState.Visualization;
+                surface.GetComponent<SpatialMappingCollider>().enabled = true;
             }
             mode = value;
         }
@@ -50,7 +53,7 @@ public class WorldCursor : MonoBehaviour {
     void Start () {
         renderer = this.GetComponentInChildren<MeshRenderer>();
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
         Vector3 headPosition = Camera.main.transform.position;
@@ -75,7 +78,35 @@ public class WorldCursor : MonoBehaviour {
         }
         else
         {
-            activeSelection.transform.position = (headPosition + 10.0f*gazeDirection);
+            RaycastHit hit;
+            //Debug.Log(hits.Length);
+            if (Physics.Raycast(headPosition, gazeDirection,out hit, 1 << LayerMask.NameToLayer("SpatialSurfaces")))
+            {
+                //if()
+                if (hit.collider.gameObject.name.Contains("spatial-mapping-surface"))
+                {
+                    activeSelection.transform.position = hit.point;
+                    Debug.Log(hit.collider.gameObject.name);
+                    Debug.Log(hit.point);
+                }
+            }
+            else
+            {
+                activeSelection.transform.position = (headPosition + 10.0f * gazeDirection);
+            }
         }
 	}
+    
+    public Vector3 GetPosition()
+    {
+        return Camera.main.transform.position;
+    }
+    public Quaternion GetRotation()
+    {
+        return Camera.main.transform.rotation;
+    }
+    public Vector3 LookAtDirection()
+    {
+        return Camera.main.transform.forward;
+    }
 }

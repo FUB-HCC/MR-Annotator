@@ -2,16 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using arannotate;
+using ff.vr.annotate.viz;
+using ff.nodegraph;
+using ff.nodegraph.interaction;
 
-public class AnnotatedObject {
+public class AnnotatedObject : MonoBehaviour {
     public GameObject annotatedObject;
     public Dictionary<String,Annotation> annotations = new Dictionary<String,Annotation>();
     public bool showAnnotations;
+    public AnnotationGizmo annotationGizmoPrefab;
 
-    public AnnotatedObject(GameObject obj,Dictionary<String,Annotation> annotations)
+    public AnnotatedObject(GameObject obj,Dictionary<String,Annotation> annotations,AnnotationGizmo prefab)
     {
         this.annotatedObject = obj;
         this.annotations = annotations;
+        this.annotationGizmoPrefab = prefab;
 
         GameObject annotationContainer = new GameObject("Annotations");
         annotationContainer.transform.parent = annotatedObject.transform;
@@ -20,24 +26,36 @@ public class AnnotatedObject {
         List<Vector3> anchorVerts = new List<Vector3>();
         List<int> anchorIdx = new List<int>();
         List<Color> colors = new List<Color>();
-        foreach(Annotation a in annotations.Values)
+        obj.AddComponent<NodeGraph>();
+        obj.GetComponent<NodeGraph>().Node = Node.FindChildNodes(obj); 
+        Debug.Log(obj.GetComponent<NodeGraph>().Node.NodePath);
+        foreach (Annotation a in annotations.Values)
         {
             GameObject cont = new GameObject();
             cont.name = a._id;
             cont.transform.parent = annotationContainer.transform;
-            GameObject annotationAnchor = new GameObject();
+            /*GameObject annotationAnchor = new GameObject();
             TextMesh annotationText = annotationAnchor.AddComponent<TextMesh>();
             annotationText.name = "Text";
             annotationText.transform.parent = cont.transform;
             annotationText.text = a.description;
+            annotationText.text = "";
             annotationText.color = Color.red;
             annotationText.transform.position = a.localPosition;
             annotationAnchor = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             annotationAnchor.name = "Anchor";
             annotationAnchor.transform.parent = cont.transform;
             annotationAnchor.transform.position = a.localPosition;
-            anchorVerts.Add(a.localPosition);
+            anchorVerts.Add(a.localPosition);*/
+
+            /*AnnotationGizmo gizmo = Instantiate<AnnotationGizmo>(annotationGizmoPrefab);
+            gizmo.UpdateBodyText(a.description);
+            gizmo.transform.parent = cont.transform;
+            gizmo.transform.position = a.localPosition;*/
         }
+        AnnotationManager annManager = AnnotationManager.Instance;
+        annManager.ReadAnnotationsFromObject(this, obj.GetComponent<NodeGraph>().Node);
+        NodeSelector.Instance.NodeGraphs = FindObjectsOfType<NodeGraph>();
     }
 
     public void deleteAnnotation(String id)

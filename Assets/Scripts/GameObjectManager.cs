@@ -9,10 +9,12 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Windows.Speech;
+using ff.vr.annotate.viz;
 
 
 public class GameObjectManager : MonoBehaviour {
     private ProjectInfoJson projects;
+    private GameObject spawnedObjects;
     private Dictionary<String,AnnotatedObject> spawnedObject = new Dictionary<String, AnnotatedObject>();
 
     public void SpawnObject(String name)
@@ -24,6 +26,26 @@ public class GameObjectManager : MonoBehaviour {
                 GameObject parent = GameObject.Find("Holograms");
                 AnnotatedObject obj = parent.GetComponent<CouchDBWrapper>().LoadObject(p._id, this.transform);
                 obj.annotatedObject.name = name;
+                Bounds aabb = obj.annotatedObject.GetComponent<Renderer>().bounds;
+                Vector3 max = aabb.max;
+                Vector3 min = aabb.min;
+                Vector3 scaleFactors = new Vector3();
+                scaleFactors.x = 1.0f / (max.x - min.x);
+                scaleFactors.y = 1.0f / (max.y - min.y);
+                scaleFactors.z = 1.0f / (max.z - min.z);
+                if(scaleFactors.x < scaleFactors.y && scaleFactors.x < scaleFactors.z)
+                {
+                    obj.annotatedObject.transform.localScale = new Vector3(scaleFactors.x, scaleFactors.x, scaleFactors.x);
+                }
+                else if(scaleFactors.y < scaleFactors.x && scaleFactors.y < scaleFactors.z)
+                {
+                    obj.annotatedObject.transform.localScale = new Vector3(scaleFactors.y, scaleFactors.y, scaleFactors.y);
+                }
+                else
+                {
+                    obj.annotatedObject.transform.localScale = new Vector3(scaleFactors.z, scaleFactors.z, scaleFactors.z);
+                }
+                obj.annotatedObject.transform.localScale *= 5.0f;
                 spawnedObject.Add(name,obj);
                 break;
             }
@@ -78,7 +100,7 @@ public class GameObjectManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        
+        //AnnotationManager.Instance = new AnnotationManager();
         GameObject parent = GameObject.Find("Holograms");
         projects = parent.GetComponent<CouchDBWrapper>().GetProjectList();
         SpawnObject("lamp");

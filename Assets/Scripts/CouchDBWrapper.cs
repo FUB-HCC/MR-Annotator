@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using arannotate;
+using ff.vr.annotate.viz;
+
 
 [System.Serializable]
 public class ProjectInfoJson
@@ -42,6 +45,7 @@ public class CouchDBWrapper : MonoBehaviour {
     public string url;
 
     public ProjectInfoJson projects;
+    public AnnotationGizmo annotationGizmoPrefab;
 
     private string GetRequest(string uri)
     {
@@ -67,7 +71,7 @@ public class CouchDBWrapper : MonoBehaviour {
         Debug.Log(text);
 
         ObjImporter importer = new ObjImporter();
-        GameObject obj = new GameObject();
+        GameObject obj = new GameObject(id);
         obj.transform.parent = parent;
         obj.AddComponent<MeshRenderer>();
         obj.AddComponent<MeshFilter>();
@@ -76,7 +80,9 @@ public class CouchDBWrapper : MonoBehaviour {
         obj.GetComponent<MeshFilter>().mesh.RecalculateNormals();
         obj.GetComponent<MeshFilter>().mesh.RecalculateTangents();
         obj.GetComponent<MeshFilter>().mesh.RecalculateBounds();
+        obj.GetComponent<MeshCollider>().sharedMesh = null;
         obj.GetComponent<MeshCollider>().sharedMesh = obj.GetComponent<MeshFilter>().mesh;
+        obj.GetComponent<MeshCollider>().convex = true;
         obj.GetComponent<Renderer>().enabled = true;
         obj.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/3D_Object__32_001Mat");
 
@@ -92,7 +98,7 @@ public class CouchDBWrapper : MonoBehaviour {
             }
         }
 
-        return new AnnotatedObject(obj, annotations);
+        return new AnnotatedObject(obj, annotations,annotationGizmoPrefab);
     }
 
     public ProjectInfoJson GetProjectList()

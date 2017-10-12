@@ -3,15 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VR.WSA.Input;
+using ff.utils;
 
-public class GestureManager : MonoBehaviour {
+public class GestureManager : Singleton<GestureManager> {
     public enum ManipulationMode{
         MODE_ROTATE,
         MODE_SCALE
     };
     private GameObject FocusedObject = null;
     private GameObject manipulationObject = null;
-    private GestureRecognizer gestureRecognizer = null;
+    public GestureRecognizer gestureRecognizer = null;
     private bool manipulation = false;
     public ManipulationMode mode = ManipulationMode.MODE_SCALE;
 	// Use this for initialization
@@ -20,7 +21,7 @@ public class GestureManager : MonoBehaviour {
         gestureRecognizer.ManipulationStartedEvent += ManipulationStarted;
         gestureRecognizer.ManipulationUpdatedEvent += ManipulationUpdated;
         gestureRecognizer.ManipulationCompletedEvent += ManipulationCompleted;
-        gestureRecognizer.SetRecognizableGestures(GestureSettings.ManipulationTranslate);
+        gestureRecognizer.SetRecognizableGestures(GestureSettings.ManipulationTranslate|GestureSettings.Tap);
         gestureRecognizer.StartCapturingGestures();
 	}
 
