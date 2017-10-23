@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VR.WSA;
 using ff.utils;
+using ff.vr.interaction;
 
 public class WorldCursor : Singleton<WorldCursor> {
     public enum ManipulationMode
@@ -58,6 +59,8 @@ public class WorldCursor : Singleton<WorldCursor> {
 	void Update () {
         Vector3 headPosition = Camera.main.transform.position;
         Vector3 gazeDirection = Camera.main.transform.forward;
+
+        FindObjectOfType<LaserPointer>().transform.SetPositionAndRotation(headPosition,Camera.main.transform.rotation);
 
         RaycastHit hitInfo;
         if (mode == ManipulationMode.MODE_LOOK)

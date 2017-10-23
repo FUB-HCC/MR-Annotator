@@ -67,7 +67,10 @@ namespace ff.vr.annotate.viz
             foreach(arannotate.Annotation a in annotatedObject.annotations.Values)
             {
                 Annotation newAnnotation = new Annotation(a,node);
-                CreateAnnotationGizmo(newAnnotation);
+                AnnotationGizmo newGizmo = CreateAnnotationGizmo(newAnnotation);
+                newGizmo.transform.localScale = obj.transform.localScale;
+                Debug.Log(annotatedObject.transform.position);
+                newGizmo.transform.position = newGizmo.transform.position + obj.transform.position;
             }
         }
 
@@ -156,8 +159,6 @@ namespace ff.vr.annotate.viz
         {
             var newAnnotationGizmo = Instantiate(_annotationGizmoPrefab);
             newAnnotationGizmo.transform.position = annotation.AnnotationPosition.position;
-            Debug.Log("GIZMOCONTAINER");
-            Debug.Log(_gizmoContainer);
             newAnnotationGizmo.transform.SetParent(_gizmoContainer.transform, false);
             newAnnotationGizmo.Annotation = annotation;
             AllAnnotationGizmos.Add(newAnnotationGizmo);

@@ -46,6 +46,7 @@ public class GameObjectManager : MonoBehaviour {
                     obj.annotatedObject.transform.localScale = new Vector3(scaleFactors.z, scaleFactors.z, scaleFactors.z);
                 }
                 obj.annotatedObject.transform.localScale *= 5.0f;
+                obj.annotatedObject.transform.position = 10 * Camera.main.transform.forward;
                 spawnedObject.Add(name,obj);
                 break;
             }
