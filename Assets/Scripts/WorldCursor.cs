@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.VR.WSA;
+
 
 public class WorldCursor : MonoBehaviour {
     public enum ManipulationMode
@@ -10,7 +10,7 @@ public class WorldCursor : MonoBehaviour {
         MODE_LOOK,
         MODE_MOVE
     };
-    private SurfaceObserver surfaceObserver = null;
+    private UnityEngine.XR.WSA.SurfaceObserver surfaceObserver = null;
 
     public Vector3 lookAtPoint;
     private MeshRenderer renderer;

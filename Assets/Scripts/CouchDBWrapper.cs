@@ -78,7 +78,7 @@ public class CouchDBWrapper : MonoBehaviour {
         obj.GetComponent<MeshFilter>().mesh.RecalculateBounds();
         obj.GetComponent<MeshCollider>().sharedMesh = obj.GetComponent<MeshFilter>().mesh;
         obj.GetComponent<Renderer>().enabled = true;
-        obj.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/3D_Object__32_001Mat");
+        obj.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/defaultMat");
 
         text = GetRequest("/" + id + "/_all_docs?include_docs=true");
 
@@ -99,6 +99,8 @@ public class CouchDBWrapper : MonoBehaviour {
     {
         string text = GetRequest("/info/projectsInfo");
         projects = JsonUtility.FromJson<ProjectInfoJson>(text);
+        Debug.Log(text);
+        Debug.Log(projects.projects[0]._id);
         return projects;
     }
 

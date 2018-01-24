@@ -31,33 +31,34 @@ public class SpeechManager : MonoBehaviour {
         keywords.Add("Scale Object",()=> 
         {
             Debug.Log("Scale Mode");
-            parent.GetComponent<GestureManager>().mode = GestureManager.ManipulationMode.MODE_SCALE;
+            parent.GetComponent<QuickExampleController>().Mode = QuickExampleController.ManipulationMode.MODE_SCALE;
         });
         keywords.Add("Rotate Object", () => 
         {
             Debug.Log("Rotate Mode");
-            parent.GetComponent<GestureManager>().mode = GestureManager.ManipulationMode.MODE_ROTATE;
+            parent.GetComponent<QuickExampleController>().Mode = QuickExampleController.ManipulationMode.MODE_ROTATE;
         });
         keywords.Add("Move Object", () => 
         {
             Debug.Log("Move Mode");
-            parent.GetComponentInChildren<WorldCursor>().Mode = WorldCursor.ManipulationMode.MODE_MOVE;
+            parent.GetComponentInChildren<QuickExampleController>().Mode = QuickExampleController.ManipulationMode.MODE_TRANSLATE;
         });
         keywords.Add("Place Object", () => 
         {
-            Debug.Log("Look Mode"); parent.GetComponentInChildren<WorldCursor>().Mode = WorldCursor.ManipulationMode.MODE_LOOK;
+            Debug.Log("Look Mode");
+            parent.GetComponentInChildren<QuickExampleController>().Mode = QuickExampleController.ManipulationMode.MODE_LOOK;
         });
         keywords.Add("Destroy Object",() => 
         {
-            parent.GetComponent<GameObjectManager>().DeleteObject(parent.GetComponentInChildren<WorldCursor>().ActiveSelection.name);
+            parent.GetComponent<GameObjectManager>().DeleteObject(parent.GetComponentInChildren<QuickExampleController>().ActiveSelection.name);
         });
         keywords.Add("Hide Annotations", () =>
         {
-            parent.GetComponent<GameObjectManager>().hideAnnotations(parent.GetComponentInChildren<WorldCursor>().ActiveSelection.name,true);
+            parent.GetComponent<GameObjectManager>().hideAnnotations(parent.GetComponentInChildren<QuickExampleController>().ActiveSelection.name,true);
         });
         keywords.Add("Show Annotations", () =>
         {
-            parent.GetComponent<GameObjectManager>().hideAnnotations(parent.GetComponentInChildren<WorldCursor>().ActiveSelection.name,false);
+            parent.GetComponent<GameObjectManager>().hideAnnotations(parent.GetComponentInChildren<QuickExampleController>().ActiveSelection.name,false);
         });
         keywords.Add("Create Annotation", () =>
         {
@@ -67,8 +68,8 @@ public class SpeechManager : MonoBehaviour {
 
             dictationResult = "";
 
-            Vector3 pos = parent.GetComponentInChildren<WorldCursor>().lookAtPoint;
-            String name = parent.GetComponentInChildren<WorldCursor>().ActiveSelection.name;
+            Vector3 pos = parent.GetComponentInChildren<QuickExampleController>().lookAtPoint;
+            String name = parent.GetComponentInChildren<QuickExampleController>().ActiveSelection.name;
             annotationId = parent.GetComponent<GameObjectManager>().createAnnotation(name, pos, dictationResult);
 
             dictationRecognizer.DictationResult += (text, confidence) =>
@@ -100,7 +101,7 @@ public class SpeechManager : MonoBehaviour {
 
         keywords.Add("Update Annotation", () =>
         {
-            GameObject selection = parent.GetComponentInChildren<WorldCursor>().ActiveSelection;
+            GameObject selection = parent.GetComponentInChildren<QuickExampleController>().ActiveSelection;
             if (selection.name == "Anchor")
             {
                 Debug.Log("Update Annotation");
@@ -142,7 +143,7 @@ public class SpeechManager : MonoBehaviour {
 
         keywords.Add("Delete Annotation", () =>
         {
-            GameObject selection = parent.GetComponentInChildren<WorldCursor>().ActiveSelection;
+            GameObject selection = parent.GetComponentInChildren<QuickExampleController>().ActiveSelection;
             if(selection.name=="Anchor")
             {
                 Debug.Log("Delete Annotation");

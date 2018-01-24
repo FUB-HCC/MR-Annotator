@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.VR.WSA.Input;
+
 
 public class GestureManager : MonoBehaviour {
     public enum ManipulationMode{
@@ -11,32 +11,32 @@ public class GestureManager : MonoBehaviour {
     };
     private GameObject FocusedObject = null;
     private GameObject manipulationObject = null;
-    private GestureRecognizer gestureRecognizer = null;
+    private UnityEngine.XR.WSA.Input.GestureRecognizer gestureRecognizer = null;
     private bool manipulation = false;
     public ManipulationMode mode = ManipulationMode.MODE_SCALE;
 	// Use this for initialization
 	void Start () {
-        gestureRecognizer = new GestureRecognizer();
+        gestureRecognizer = new UnityEngine.XR.WSA.Input.GestureRecognizer();
         gestureRecognizer.ManipulationStartedEvent += ManipulationStarted;
         gestureRecognizer.ManipulationUpdatedEvent += ManipulationUpdated;
         gestureRecognizer.ManipulationCompletedEvent += ManipulationCompleted;
-        gestureRecognizer.SetRecognizableGestures(GestureSettings.ManipulationTranslate);
+        gestureRecognizer.SetRecognizableGestures(UnityEngine.XR.WSA.Input.GestureSettings.ManipulationTranslate);
         gestureRecognizer.StartCapturingGestures();
 	}
 
-    private void ManipulationCompleted(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
+    private void ManipulationCompleted(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
     {
         manipulation = false;
         manipulationObject = null;
     }
 
-    private void ManipulationStarted(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
+    private void ManipulationStarted(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
     {
         manipulation = true;
         manipulationObject = FocusedObject;
     }
 
-    private void ManipulationUpdated(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
+    private void ManipulationUpdated(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
     {
         if(manipulationObject!=null)
         {
