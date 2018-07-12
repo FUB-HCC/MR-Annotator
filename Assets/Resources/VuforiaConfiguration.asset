@@ -16,8 +16,8 @@ MonoBehaviour:
     ufoLicenseKey: QVVsRFE5Yi8vLy8vQUFBQUtBSHhKSytWUVVSRm9sdk5OZytzZy94T1lvUUFLdjVOUjNRU1dMU255K3lLeUFIbU03U1hzN3BQUXVFdVVqa3lvbnFXU3BXdjhveHlETGFvaGs5QmM3SFNvSFIvWGF6YmhhRU94aGNsM0hHaHJPMmcvUW1PUWVmL1NqVUFwUFdWU3dOa04wUzBUTWpWMllXN3hHVGVjVFBleGNZSDR4bjlYa25MZ3I2UUxOTmFEbVo3Umo3QUlZUVdzVENPMk82SWJ2YUczM2l1bFVmdzArcUFGbTZ1ekxINmVWVld3eSs5VlBDd2dFLzBScy9STnhzVWNBd3gwZlkvai9tVmR3SXQ3MzVGY1hNcHlZQll0enhrUUl3RlFwaWtiWlBDbjhGbUMvdjlhT2d3bDNic292VytlUzNvbFZlOEg1K1JPN21oRXoyR2k3dW5oYmVvNDVWRVV4Tmc1ZHlYakx5UjBPSS9XaTU4NjBzUW9ScFY=
     delayedInitialization: 0
     cameraDeviceModeSetting: -1
-    maxSimultaneousImageTargets: 1
-    maxSimultaneousObjectTargets: 1
+    maxSimultaneousImageTargets: 8
+    maxSimultaneousObjectTargets: 2
     useDelayedLoadingObjectTargets: 1
     cameraDirection: 0
     mirrorVideoBackground: 0
@@ -44,8 +44,10 @@ MonoBehaviour:
       ContainsMagnet: 0
   databaseLoad:
     dataSetsToLoad:
+    - QrCodeTracking
     - Test_OT
     dataSetsToActivate:
+    - QrCodeTracking
     - Test_OT
   videoBackground:
     clippingMode: 0
@@ -54,11 +56,6 @@ MonoBehaviour:
       type: 0}
     matteShader: {fileID: 15310, guid: 0000000000000000f000000000000000, type: 0}
     videoBackgroundEnabled: 1
-  smartTerrainTracker:
-    autoInitTracker: 0
-    autoStartTracker: 0
-    autoInitBuilder: 0
-    sceneUnitsToMillimeter: 0
   deviceTracker:
     autoInitTracker: 0
     autoStartTracker: 0
@@ -67,6 +64,9 @@ MonoBehaviour:
     modelCorrectionMode: 0
     modelTransformEnabled: 0
     modelTransform: {x: 0, y: 0.1, z: -0.1}
+  smartTerrain:
+    autoInitTracker: 0
+    autoStartTracker: 0
   webcam:
     deviceNameSetInEditor: 
     flipHorizontally: 0

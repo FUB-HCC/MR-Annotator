@@ -15,19 +15,30 @@ public class GameObjectManager : MonoBehaviour {
     private ProjectInfoJson projects;
     private Dictionary<String,AnnotatedObject> spawnedObject = new Dictionary<String, AnnotatedObject>();
 
-    public void SpawnObject(String name)
+    public void SpawnObject(String name, Vector3 offset, float scale = 1.0f)
     {
         foreach (ProjectJson p in projects.projects)
         {
             if (p.name == name)
             {
+                spawnedObject.Add(name, null);
                 GameObject parent = GameObject.Find("Holograms");
-                AnnotatedObject obj = parent.GetComponent<CouchDBWrapper>().LoadObject(p._id, this.transform);
-                obj.annotatedObject.name = name;
-                spawnedObject.Add(name,obj);
-                break;
+                parent.GetComponent<CouchDBWrapper>().LoadObject(p._id, name, this.transform,scale,offset);
             }
         }
+    }
+
+    private void ObjectLoaded(AnnotatedObject obj)
+    {
+        if (ObjectExists(obj.annotatedObject.name) && spawnedObject[obj.annotatedObject.name] == null)
+        {
+            spawnedObject[obj.annotatedObject.name] = obj;
+        }
+    }
+
+    private void ProjectListLoaded(ProjectInfoJson projects)
+    {
+        this.projects = projects;
     }
 
     public void DeleteObject(String name)
@@ -38,6 +49,31 @@ public class GameObjectManager : MonoBehaviour {
             Destroy(spawnedObject[name].annotatedObject);
             spawnedObject[name] = null;
             spawnedObject.Remove(name);
+        }
+    }
+
+    public void Clear()
+    {
+        spawnedObject.Clear();
+    }
+
+    public bool ObjectExists(String name)
+    {
+        return spawnedObject.ContainsKey(name);
+    }
+
+    public AnnotatedObject GetObject(String name)
+    {
+        AnnotatedObject obj;
+        spawnedObject.TryGetValue(name, out obj);
+        return obj;
+    }
+
+    public void UpdateAnnotedObject(AnnotatedObject obj)
+    {
+        if (spawnedObject.ContainsKey(name))
+        {
+            Debug.Log("GameObjectManager");
         }
     }
 
@@ -78,10 +114,11 @@ public class GameObjectManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        
         GameObject parent = GameObject.Find("Holograms");
-        projects = parent.GetComponent<CouchDBWrapper>().GetProjectList();
-        SpawnObject("lamp");
+        parent.GetComponent<CouchDBWrapper>().ProjectListLoaded += ProjectListLoaded;
+        parent.GetComponent<CouchDBWrapper>().ObjectLoaded += ObjectLoaded;
+        parent.GetComponent<CouchDBWrapper>().GetProjectList();
+        //SpawnObject("lamp");
     }
 
 

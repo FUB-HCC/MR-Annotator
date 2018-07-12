@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MR-Annotate_Main", "MR-Annotate_Main.csproj", "{2C36E354-F94A-FFA8-3EDE-598A35C3A24B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MR-Annotate_Main.Editor", "MR-Annotate_Main.Editor.csproj", "{8E82C042-9524-C48A-1AE3-7C52243ABDD3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2C36E354-F94A-FFA8-3EDE-598A35C3A24B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C36E354-F94A-FFA8-3EDE-598A35C3A24B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C36E354-F94A-FFA8-3EDE-598A35C3A24B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C36E354-F94A-FFA8-3EDE-598A35C3A24B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E82C042-9524-C48A-1AE3-7C52243ABDD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E82C042-9524-C48A-1AE3-7C52243ABDD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E82C042-9524-C48A-1AE3-7C52243ABDD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E82C042-9524-C48A-1AE3-7C52243ABDD3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

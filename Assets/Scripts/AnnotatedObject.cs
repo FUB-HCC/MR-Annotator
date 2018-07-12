@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AnnotatedObject {
     public GameObject annotatedObject;
     public Dictionary<String,Annotation> annotations = new Dictionary<String,Annotation>();
     public bool showAnnotations;
 
-    public AnnotatedObject(GameObject obj,Dictionary<String,Annotation> annotations)
+    public AnnotatedObject(GameObject obj,Dictionary<String,Annotation> annotations,GameObject annotationInfoBox)
     {
         this.annotatedObject = obj;
         this.annotations = annotations;
@@ -27,15 +28,34 @@ public class AnnotatedObject {
             cont.transform.parent = annotationContainer.transform;
             GameObject annotationAnchor = new GameObject();
             TextMesh annotationText = annotationAnchor.AddComponent<TextMesh>();
+
+            //Create GUI
+            Canvas annotationCanvas = cont.AddComponent<Canvas>();
+            annotationCanvas.worldCamera = Camera.main;
+            annotationCanvas.name = "Canvas";
+            annotationCanvas.renderMode = RenderMode.WorldSpace;
+            annotationCanvas.transform.parent = cont.transform;
+            annotationCanvas.transform.position = a.localPosition;
+            annotationCanvas.enabled = true;
+
+            Text annotationLabel = cont.AddComponent<Text>();
+            annotationLabel.name = "Text";
+            annotationLabel.transform.parent = cont.transform;
+            annotationLabel.text = a.description;
+            annotationLabel.color = Color.blue;
+            annotationLabel.enabled = true;
+
             annotationText.name = "Text";
             annotationText.transform.parent = cont.transform;
-            annotationText.text = a.description;
+            annotationText.text = /*a.description*/"";
             annotationText.color = Color.red;
             annotationText.transform.position = a.localPosition;
+            annotationText.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             annotationAnchor = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             annotationAnchor.name = "Anchor";
             annotationAnchor.transform.parent = cont.transform;
             annotationAnchor.transform.position = a.localPosition;
+            annotationAnchor.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             anchorVerts.Add(a.localPosition);
         }
     }
@@ -72,17 +92,35 @@ public class AnnotatedObject {
         cont.transform.parent = container.transform;
         cont.name = annotation._id;
         GameObject annotationAnchor = new GameObject();
-        TextMesh annotationText = annotationAnchor.AddComponent<TextMesh>();
-        annotationText.name = "Text";
-        annotationText.transform.parent = cont.transform;
-        annotationText.text = text;
-        annotationText.color = Color.red;
-        annotationText.transform.position = pos;
-        annotationAnchor = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        annotationAnchor.name = "Anchor";
-        annotationAnchor.transform.parent = cont.transform;
-        annotationAnchor.transform.position = pos;
-        
+        //Create GUI
+        Canvas annotationCanvas = cont.AddComponent<Canvas>();
+        annotationCanvas.worldCamera = Camera.main;
+        annotationCanvas.name = "Canvas";
+        annotationCanvas.renderMode = RenderMode.WorldSpace;
+        annotationCanvas.transform.parent = cont.transform;
+        annotationCanvas.transform.position = pos;
+        annotationCanvas.enabled = true;
+
+        Text annotationLabel = cont.AddComponent<Text>();
+        annotationLabel.name = "Text";
+        annotationLabel.transform.parent = cont.transform;
+        annotationLabel.text = text;
+        annotationLabel.color = Color.blue;
+        annotationLabel.enabled = true;
+
+        //TextMesh annotationText = cont.AddComponent<TextMesh>();
+        //annotationText.name = "Text";
+        //annotationText.transform.parent = cont.transform;
+        //annotationText.text = /*text*/"";
+        //annotationText.color = Color.red;
+        //annotationText.transform.position = pos;
+        //annotationText.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        //annotationAnchor = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //annotationAnchor.name = "Anchor";
+        //annotationAnchor.transform.parent = cont.transform;
+        //annotationAnchor.transform.position = pos;
+        //annotationAnchor.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+
         return annotation._id;
     }
 

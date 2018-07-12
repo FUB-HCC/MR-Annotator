@@ -8,14 +8,16 @@ using UnityEngine.Windows.Speech;
 public class SpeechManager : MonoBehaviour {
     private KeywordRecognizer keywordRecognizer = null;
     private DictationRecognizer dictationRecognizer = null;
+
+    GameObject parent = null;
     String dictationResult = "";
     String annotationId = "";
     Dictionary<string, System.Action> keywords = new Dictionary<string, System.Action>();
 	// Use this for initialization
 	void Start () {
-        GameObject parent = GameObject.Find("Holograms");
-        ProjectInfoJson projects = parent.GetComponent<CouchDBWrapper>().GetProjectList();
-        foreach (ProjectJson p in projects.projects)
+        parent = GameObject.Find("Holograms");
+        //ProjectInfoJson projects = parent.GetComponent<CouchDBWrapper>().GetProjectList();
+        /*foreach (ProjectJson p in projects.projects)
         {
             Debug.Log(p.name);
             keywords.Add("Spawn " + p.name,()=> 
@@ -26,7 +28,12 @@ public class SpeechManager : MonoBehaviour {
             {
                 parent.GetComponent<GameObjectManager>().DeleteObject(p.name);
             });
-        }
+        }*/
+
+        keywords.Add("Reset Annotator", () =>
+        {
+            parent.GetComponent<GameObjectManager>().Clear();
+        });
 
         keywords.Add("Scale Object",()=> 
         {
@@ -156,6 +163,39 @@ public class SpeechManager : MonoBehaviour {
         keywordRecognizer.OnPhraseRecognized += onKeywordRecognized;
         keywordRecognizer.Start();
 	}
+
+    public void addAnnotation(String name, Vector3 pos)
+    {
+        GameObject ActiveSelection = parent.GetComponentInChildren<QuickExampleController>().ActiveSelection;
+        PhraseRecognitionSystem.Shutdown();
+        String dictationResult = "";
+
+        String annotationId = parent.GetComponent<GameObjectManager>().createAnnotation(ActiveSelection.name, pos, dictationResult);
+
+        dictationRecognizer.DictationResult += (text, confidence) =>
+        {
+            dictationResult += text;
+            dictationRecognizer.Stop();
+            parent.GetComponent<GameObjectManager>().updateAnnotation(name, annotationId, dictationResult);
+            Debug.Log("Result: " + text);
+        };
+        dictationRecognizer.DictationHypothesis += (text) =>
+        {
+            parent.GetComponent<GameObjectManager>().updateAnnotation(name, annotationId, text);
+            Debug.Log("Hypothesis: " + text);
+        };
+        dictationRecognizer.DictationComplete += (cause) =>
+        {
+            Debug.Log("Completed Dictation");
+            PhraseRecognitionSystem.Restart();
+            keywordRecognizer.Start();
+        };
+        dictationRecognizer.DictationError += (error, hresult) =>
+        {
+            Debug.LogErrorFormat("Dictation error: {0}; HResult = {1}.", error, hresult);
+        };
+        dictationRecognizer.Start();
+    }
 
     private void onKeywordRecognized(PhraseRecognizedEventArgs args)
     {

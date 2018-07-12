@@ -6,6 +6,7 @@ All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 ==============================================================================*/
 
+using System;
 using UnityEngine;
 using Vuforia;
 
@@ -45,12 +46,48 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
             newStatus == TrackableBehaviour.Status.TRACKED ||
             newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED)
         {
+            string[] marker = mTrackableBehaviour.TrackableName.Split('-');
+            GameObject nMarkBase = GameObject.Find("MarkerBases/" + marker[0]);
+            //GameObject nMarkBase = GameObject.Find("MarkerBases/" + "shuttle");
+            if (nMarkBase==null)
+            {
+                GameObject markBases = GameObject.Find("MarkerBases");
+                nMarkBase = new GameObject(marker[0]);
+                //nMarkBase = new GameObject("shuttle");
+                nMarkBase.transform.SetParent(markBases.transform);
+                nMarkBase.AddComponent<MarkerAugmentation>();
+            }
+            MarkerAugmentation markaug = nMarkBase.GetComponent<MarkerAugmentation>();
+            GameObjectManager goManager = GameObject.Find("Holograms").GetComponent<GameObjectManager>();
+
+            markaug.trackerState[Int32.Parse(marker[1]), Int32.Parse(marker[2])] = true;
+            markaug.trackerPos[Int32.Parse(marker[1]), Int32.Parse(marker[2])] = mTrackableBehaviour.transform.position;
+            //markaug.trackedObject = "shuttle";
+            markaug.trackedObject = marker[0];
+
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
             OnTrackingFound();
         }
         else if (previousStatus == TrackableBehaviour.Status.TRACKED &&
                  newStatus == TrackableBehaviour.Status.NOT_FOUND)
         {
+            string[] marker = mTrackableBehaviour.TrackableName.Split('-');
+            GameObject nMarkBase = GameObject.Find("MarkerBases/" + marker[0]);
+            //GameObject nMarkBase = GameObject.Find("MarkerBases/" + "shuttle");
+
+            if (nMarkBase == null)
+            {
+                GameObject markBases = GameObject.Find("MarkerBases");
+                nMarkBase = new GameObject(marker[0]);
+                //nMarkBase = new GameObject("shuttle");
+                nMarkBase.transform.SetParent(markBases.transform);
+                nMarkBase.AddComponent<MarkerAugmentation>();
+            }
+            MarkerAugmentation markaug = nMarkBase.GetComponent<MarkerAugmentation>();
+            markaug.trackerState[Int32.Parse(marker[1]), Int32.Parse(marker[2])] = false;
+            markaug.trackerPos[Int32.Parse(marker[1]), Int32.Parse(marker[2])] = mTrackableBehaviour.transform.position;
+            markaug.trackedObject = marker[0];
+            //markaug.trackedObject = "shuttle";
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
             OnTrackingLost();
         }
@@ -59,6 +96,13 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
             // For combo of previousStatus=UNKNOWN + newStatus=UNKNOWN|NOT_FOUND
             // Vuforia is starting, but tracking has not been lost or found yet
             // Call OnTrackingLost() to hide the augmentations
+            MarkerAugmentation markaug = GetComponentInParent<MarkerAugmentation>();
+            string[] marker = mTrackableBehaviour.TrackableName.Split('-');
+            markaug.trackerState[Int32.Parse(marker[1]), Int32.Parse(marker[2])] = false;
+            markaug.trackerPos[Int32.Parse(marker[1]), Int32.Parse(marker[2])] = mTrackableBehaviour.transform.position;
+            markaug.trackedObject = marker[0];
+            //markaug.trackedObject = "shuttle";
+            Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
             OnTrackingLost();
         }
     }
@@ -75,8 +119,9 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
 
         // Enable rendering:
         foreach (var component in rendererComponents)
+        {
             component.enabled = true;
-
+        }
         // Enable colliders:
         foreach (var component in colliderComponents)
             component.enabled = true;

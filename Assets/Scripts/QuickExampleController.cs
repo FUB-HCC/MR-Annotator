@@ -3,6 +3,9 @@ using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 using WSAControllerPlugin;
+using UnityEngine.Windows.Speech;
+using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// A sample MonoBehaviour class that demonstrates the use of the <see cref="HandheldControllerBridge"/> for connecting a Bluetooth Low Energy handheld controller device with a HoloLens application built with Unity. 
@@ -40,7 +43,7 @@ public class QuickExampleController : MonoBehaviour
     private Vector3 _controllerVelocity = new Vector3(0.0f, 0.0f, 0.0f);
     private Vector3 _controllerAcceleration = new Vector3(0.0f, 0.0f, 0.0f);
     private Vector3 _controllerOldAcceleration = new Vector3(0.0f,0.0f,0.0f);
-    private Vector3 _gravity = new Vector3(0.0f, 0.0f, 0.0f);
+    private Vector3 _gravity = new Vector3(0.0f, -10.54906f, 0.0f);
     private int initReads = 0;
 
     bool firstRead = true;
@@ -49,6 +52,7 @@ public class QuickExampleController : MonoBehaviour
     private string _statusMsgActive = "Connected. Wait a few seconds then press the Main button to pop balloons!";
 
     private ManipulationMode mode = ManipulationMode.MODE_LOOK;
+    private Vector3 lastHit;
 
     public Vector3 lookAtPoint;
     private GameObject activeSelection;
@@ -110,10 +114,17 @@ public class QuickExampleController : MonoBehaviour
 
         // Subscribe to the Main button press Action
         _controllerBridge.MainBtnDown += MainBtnDownHandler;
+        _controllerBridge.MainBtnUp += MainBtnUpHandler;
+        _controllerBridge.HomeBtnDown += HomeBtnDown;
+        _controllerBridge.HomeBtnUp += HomeBtnUp;
         _controllerBridge.AppBtnDown += AppBtnDown;
+        _controllerBridge.AppBtnUp += AppBtnUp;
         _controllerBridge.VolMinusBtnDown += VolMinusBtnDown;
+        _controllerBridge.VolMinusBtnUp += VolMinusBtnUp;
         _controllerBridge.VolPlusBtnDown += VolPlusBtnDown;
+        _controllerBridge.VolPlusBtnUp += VolPlusBtnUp;
         _controllerBridge.TouchBtnDown += TouchBtnDown;
+        _controllerBridge.TouchBtnUp += TouchBtnUp;
 
         // Establish the connection with a handheld controller device 
         _controllerBridge.CalibrationComplete += callibrationComplete;
@@ -127,6 +138,8 @@ public class QuickExampleController : MonoBehaviour
 
     }
 
+
+
     private void callibrationBegan()
     {
         _controllerDisplayLaser.GetComponent<MeshRenderer>().material.color = COLOR_LASER_CALIBRATING;
@@ -137,39 +150,8 @@ public class QuickExampleController : MonoBehaviour
 
     private void callibrationCanceled()
     {
-        /*
-        List<byte[]> rawList = _controllerBridge.GetRawData();
-        if (rawList.Count > 0)
-        {
-            byte[] raw = rawList[0];
-            byte accZ1 = (byte)((raw[6]) & 0x7);
-            byte accZ2 = (byte)(raw[7]);
-            byte accZ3 = (byte)((raw[8] & 0xC0) >> 6);
-            byte accY1 = (byte)(raw[8] & 0x3F);
-            byte accY2 = (byte)((raw[9] & 0xFE) >> 1);
-            byte accX1 = (byte)(raw[9] & 0x01);
-            byte accX2 = (byte)(raw[10]);
-            byte accX3 = (byte)((raw[11] & 0xF0) >> 4);
-
-            int accX = (accX1 << 12) | (accX2 << 4) | (accX3);
-            accX = (accX << 19) >> 19;
-            int accY = (accY1 << 7) | (accY2);
-            accY = (accY << 19) >> 19;
-            int accZ = (accZ1 << 10) | (accZ2 << 2) | accZ3;
-            accZ = (accZ << 19) >> 19;
-
-            float accXf = accX / (4096.0f);
-            float accYf = accY / (4096.0f);
-            float accZf = accZ / (4096.0f);
-
-            Debug.Log(accXf + " " + accYf + " " + accZf);
-            _gravity = new Vector3(accXf, accYf, accZf);
-
-        }*/
         isCalibrated = true;
         Debug.Log("INITIALIZED");
-        //double[] acc = _controllerBridge.GetAccScaled();
-        //_gravity = new Vector3(((float)_controllerBridge.GetXAcc()) / sizeof(int), ((float)_controllerBridge.GetYAcc()) / sizeof(int), ((float)_controllerBridge.GetZAcc()) / sizeof(int));
 
         _controllerDisplayLaser.GetComponent<MeshRenderer>().material.color = COLOR_LASER_ACTIVE;
         _controllerDisplayLaser.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", COLOR_LASER_ACTIVE);
@@ -178,40 +160,8 @@ public class QuickExampleController : MonoBehaviour
 
     private void callibrationComplete()
     {
-        /*
-        List<byte[]> rawList = _controllerBridge.GetRawData();
-        if (rawList.Count > 0)
-        {
-            byte[] raw = rawList[0];
-            byte accZ1 = (byte)((raw[6]) & 0x7);
-            byte accZ2 = (byte)(raw[7]);
-            byte accZ3 = (byte)((raw[8] & 0xC0) >> 6);
-            byte accY1 = (byte)(raw[8] & 0x3F);
-            byte accY2 = (byte)((raw[9] & 0xFE) >> 1);
-            byte accX1 = (byte)(raw[9] & 0x01);
-            byte accX2 = (byte)(raw[10]);
-            byte accX3 = (byte)((raw[11] & 0xF0) >> 4);
-
-            int accX = (accX1 << 12) | (accX2 << 4) | (accX3);
-            accX = (accX << 19) >> 19;
-            int accY = (accY1 << 7) | (accY2);
-            accY = (accY << 19) >> 19;
-            int accZ = (accZ1 << 10) | (accZ2 << 2) | accZ3;
-            accZ = (accZ << 19) >> 19;
-
-            float accXf = accX / (4096.0f);
-            float accYf = accY / (4096.0f);
-            float accZf = accZ / (4096.0f);
-
-            Debug.Log(accXf + " " + accYf + " " + accZf);
-            _gravity = new Vector3(accXf,accYf,accZf);
-
-        }*/
         isCalibrated = true;
         Debug.Log("CALIBRATED");
-
-        //double[] acc = _controllerBridge.GetAccScaled();
-        //_gravity = new Vector3(((float)_controllerBridge.GetXAcc())/sizeof(int), ((float)_controllerBridge.GetYAcc()) / sizeof(int), ((float)_controllerBridge.GetZAcc()) / sizeof(int));
 
         _controllerDisplayLaser.GetComponent<MeshRenderer>().material.color = COLOR_LASER_ACTIVE;
         _controllerDisplayLaser.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", COLOR_LASER_ACTIVE);
@@ -220,90 +170,68 @@ public class QuickExampleController : MonoBehaviour
 
     void Update()
     {
-        /*
-        List<byte[]> rawList = _controllerBridge.GetRawData();
-        if (rawList.Count > 0)
-        {
-            byte[] raw = rawList[0];
-            byte accZ1 = (byte)((raw[6]) & 0x7);
-            byte accZ2 = (byte)(raw[7]);
-            byte accZ3 = (byte)((raw[8] & 0xC0) >> 6);
-            byte accY1 = (byte)(raw[8] & 0x3F);
-            byte accY2 = (byte)((raw[9] & 0xFE) >> 1);
-            byte accX1 = (byte)(raw[9] & 0x01);
-            byte accX2 = (byte)(raw[10]);
-            byte accX3 = (byte)((raw[11] & 0xF0) >> 4);
-
-            int accX = (accX1 << 12) | (accX2 << 4) | (accX3);
-            accX = (accX << 19) >> 19;
-            int accY = (accY1 << 7) | (accY2);
-            accY = (accY << 19) >> 19;
-            int accZ = (accZ1 << 10) | (accZ2 << 2) | accZ3;
-            accZ = (accZ << 19) >> 19;
-
-            float accXf = accX / (2048.0f);
-            float accYf = accY / (2048.0f);
-            float accZf = accZ / (2048.0f);
-
-            Vector3 accT = new Vector3(accXf, accYf, accZf);
-
-            //Debug.Log(accT-_gravity);
-        }*/
-
-
 
         double[] acc = _controllerBridge.GetAccScaled();
         double[] gyro = _controllerBridge.GetGyroScaled();
         double[] orient = _controllerBridge.GetOrientationScaled();
 
         Quaternion rot = _controllerBridge.GetRotation();
-        //Vector3 accVec = new Vector3((float)acc[0],(float)acc[1],(float)acc[2]);
 
         Vector3 accVec = new Vector3((float)acc[0], (float)acc[1], (float)acc[2]);
         Quaternion gyroQuat = new Quaternion((float)gyro[0], (float)gyro[1], (float)gyro[2],0.0f);
         Quaternion orientQuat = new Quaternion((float)orient[0], (float)orient[1], (float)orient[2], 0.0f);
-        //_gravity = new Vector3(0.0f, 10.0f, 0.0f);
-        //accVec = orientQuat*accVec;
-        
 
         controllerDisplay.transform.position = Camera.main.transform.position + _controllerOffsetPosition + new Vector3(0.0f,0.0f,1.0f);
         _controllerOldAcceleration = accVec;
         if (!_controllerBridge.IsCalibrationDelayActive && isCalibrated)
         {
-            controllerDisplay.transform.rotation = _controllerBridge.GetRotation();
-            //accVec = rot * accVec;
-            _gravity = 0.8f * _gravity + 0.2f * accVec;
-            accVec -= /*rot */ _gravity;
-
-            if (initReads >= 200)
+            controllerDisplay.transform.rotation = rot;
+            GameObject markBases = GameObject.Find("MarkerBases");
+            MarkerAugmentation[] bases = markBases.GetComponentsInChildren<MarkerAugmentation>();
+            MarkerAugmentation maug = null;
+            float dist = float.PositiveInfinity;
+            foreach (MarkerAugmentation b in bases)
             {
-                //Integrating to Velocity
-                _controllerVelocity = (5.0f / 60.0f) * (rot * accVec);
-                Debug.Log(_controllerVelocity);
-                //Integrating to Position
-                _controllerOffsetPosition += 5.0f/60.0f * _controllerVelocity;
+                if (b.target != null)
+                {
+                    Vector3 targetPos = b.target.annotatedObject.transform.position;
+                    Vector3 camPos = Camera.main.transform.position;
+                    float distCamPosSqr = (camPos - targetPos).sqrMagnitude;
+                    if (dist > distCamPosSqr)
+                    {
+                        maug = b;
+                        dist = distCamPosSqr;
+                    }
+                }
             }
-            else
+            if (maug != null)
             {
-                initReads++;
+                AnnotatedObject target = maug.target;
+                if (target != null)
+                {
+                    Bounds bounds = target.annotatedObject.GetComponentInChildren<MeshRenderer>().bounds;
+                    controllerDisplay.transform.position = bounds.center - rot * new Vector3(0.0f, 0.0f, bounds.extents.magnitude*1.5f);
+                }
             }
         }
         else
         {
             controllerDisplay.transform.localRotation = Quaternion.identity;
         }
-        Vector3 controllerPos = _controllerDisplayLaser.transform.position;
+
+        Vector3 controllerPos = controllerDisplay.transform.position;
         Vector3 controllerForward = _controllerDisplayLaser.transform.forward;
 
-        /*if (mode == ManipulationMode.MODE_LOOK)
+        if (mode == ManipulationMode.MODE_LOOK)
         {
             RaycastHit hitInfo;
+            Debug.Log(controllerPos);
+            Debug.Log(controllerForward);
             if (Physics.Raycast(controllerPos, controllerForward, out hitInfo))
             {
+                Debug.Log(hitInfo.collider.name);
                 activeSelection = hitInfo.collider.gameObject;
                 lookAtPoint = hitInfo.point;
-                this.transform.position = hitInfo.point;
-                this.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
             }
             else
             {
@@ -326,7 +254,7 @@ public class QuickExampleController : MonoBehaviour
             float yTouch = _controllerBridge.GetYTouch() / 255.0f;
             Vector3 axis = new Vector3(yTouch, xTouch, rotZAcc);
             activeSelection.transform.Rotate(axis.normalized, 0.1f, Space.Self);
-        }*/
+        }
     }
 
     //
@@ -335,6 +263,20 @@ public class QuickExampleController : MonoBehaviour
 
 
     //Accept Manipulation
+    private void HomeBtnUp()
+    {
+        if (activeSelection != null && !activeSelection.name.Contains("spatial-mapping-surface"))
+        {
+            //parent.GetComponent<GameObjectManager>().hideAnnotations(ActiveSelection.name, showAnnotations);
+            //parent.GetComponent<GameObjectManager>().createAnnotation(ActiveSelection.name, lookAtPoint, "Test");
+            parent.GetComponent<SpeechManager>().addAnnotation(activeSelection.name, lookAtPoint);
+        }
+    }
+
+    private void HomeBtnDown()
+    {
+    }
+
     private void MainBtnDownHandler()
     {
 
@@ -349,7 +291,11 @@ public class QuickExampleController : MonoBehaviour
     private void AppBtnDown()
     {
         showAnnotations = !showAnnotations;
-        parent.GetComponent<GameObjectManager>().hideAnnotations(parent.GetComponentInChildren<QuickExampleController>().ActiveSelection.name, showAnnotations);
+        if (activeSelection != null)
+        {
+            parent.GetComponent<GameObjectManager>().hideAnnotations(ActiveSelection.name, showAnnotations);
+            //parent.GetComponent<GameObjectManager>().createAnnotation(ActiveSelection.name, lookAtPoint, "Test");
+        }
     }
 
     private void VolMinusBtnDown()
@@ -378,6 +324,26 @@ public class QuickExampleController : MonoBehaviour
     private void TouchBtnDown()
     {
 
+    }
+
+    private void MainBtnUpHandler()
+    {
+    }
+
+    private void AppBtnUp()
+    {
+    }
+
+    private void TouchBtnUp()
+    {
+    }
+
+    private void VolPlusBtnUp()
+    {
+    }
+
+    private void VolMinusBtnUp()
+    {
     }
 
 

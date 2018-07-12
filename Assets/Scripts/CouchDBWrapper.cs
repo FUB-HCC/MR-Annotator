@@ -36,72 +36,160 @@ public class AnnotationResponseJson
     public AnnotationReponseValueJson[] rows;
 }
 
+[System.Serializable]
+public class TopicResponseJson
+{
+    public string _id;
+    public string _rev;
+    public string fileName;
+    public string fileEnding;
+    public AttachmentResponseJson[] _attachments;
+}
+
+[System.Serializable]
+public class FileResponseJson
+{
+    public string content_type;
+    public int revpos;
+    public string digest;
+    public int length;
+    public bool stub;
+}
+
+[System.Serializable]
+public class AttachmentResponseJson
+{
+    public FileResponseJson file;
+}
+
 public class CouchDBWrapper : MonoBehaviour {
     public string username;
     public string password;
     public string url;
 
+    public GameObject annotationInfoBox;
     public ProjectInfoJson projects;
+    public Action<ProjectInfoJson> ProjectListLoaded;
+    public Action<AnnotatedObject> ObjectLoaded;
 
-    private string GetRequest(string uri)
+    private UnityWebRequest CreateGetRequest(string uri,bool data=false)
     {
         string authorization = username + ":" + password;
         byte[] binaryAuthorization = System.Text.Encoding.UTF8.GetBytes(authorization);
         authorization = Convert.ToBase64String(binaryAuthorization);
         UnityWebRequest request = UnityWebRequest.Get(url+uri);
+        request.chunkedTransfer = false;
+        request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("AUTHORIZATION", "Basic " + authorization);
-        request.Send();
-        while(!request.isDone)
+        if(data)
+        {
+            request.SetRequestHeader("Accept", "multipart/related");
+        }
+        return request;
+        /*while(!webop.isDone)
         {
         }
-
         // Show results as text
-        String text = request.downloadHandler.text;
+        String text = System.Text.Encoding.ASCII.GetString(((DownloadHandlerBuffer)webop.webRequest.downloadHandler).data);
         Debug.Log(text);
-        return text;
+        return text;*/
     }
 
-    public AnnotatedObject LoadObject(string id,Transform parent)
+    public void LoadObject(string id, string name,Transform parent,float scale,Vector3 offset)
     {
-        string text = GetRequest("/" + id + "/topic_/file");
-        Debug.Log(text);
+        //string text = GetRequest("/" + id + "/topic_/file");
+        StartCoroutine(DownloadFile(id, name, parent, scale, offset));
+    }
 
-        ObjImporter importer = new ObjImporter();
-        GameObject obj = new GameObject();
-        obj.transform.parent = parent;
-        obj.AddComponent<MeshRenderer>();
-        obj.AddComponent<MeshFilter>();
-        obj.AddComponent<MeshCollider>();
-        obj.GetComponent<MeshFilter>().mesh = importer.ImportFile(text);
-        obj.GetComponent<MeshFilter>().mesh.RecalculateNormals();
-        obj.GetComponent<MeshFilter>().mesh.RecalculateTangents();
-        obj.GetComponent<MeshFilter>().mesh.RecalculateBounds();
-        obj.GetComponent<MeshCollider>().sharedMesh = obj.GetComponent<MeshFilter>().mesh;
-        obj.GetComponent<Renderer>().enabled = true;
-        obj.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/defaultMat");
+    public void GetProjectList()
+    {
+        StartCoroutine(DownloadProjectList());
+    }
 
-        text = GetRequest("/" + id + "/_all_docs?include_docs=true");
+    private IEnumerator DownloadFile(string id, string name, Transform parent,float scale,Vector3 offset)
+    {
+        //string text = GetRequest("/" + id + "/topic_/file");
 
-        AnnotationResponseJson resp = JsonUtility.FromJson<AnnotationResponseJson>(text);
-        Dictionary<String,Annotation> annotations = new Dictionary<String,Annotation>();
-        foreach (AnnotationReponseValueJson r in resp.rows)
+        Debug.Log("/" + id + "/topic_/file/");
+        UnityWebRequest webop = CreateGetRequest("/" + id + "/topic_/file", true);
+
+        yield return webop.SendWebRequest();
+        if (webop.isNetworkError && webop.responseCode != 200L)
         {
-            if (r.doc._id != "info" && r.doc._id != "topic_")
-            {
-                annotations.Add(r.doc._id,r.doc);
-            }
+            Debug.Log(webop.error);
         }
-
-        return new AnnotatedObject(obj, annotations);
+        else
+        {
+            string text = webop.downloadHandler.text;
+            Debug.Log(text.Length);
+            ObjImporter importer = new ObjImporter();
+            GameObject obj = new GameObject();
+            obj.transform.parent = parent;
+            obj.transform.localScale = new Vector3(scale, scale, scale);
+            obj.transform.position = offset;
+            obj.name = name;
+            obj.layer = 0;
+            obj.AddComponent<MeshRenderer>();
+            obj.AddComponent<MeshFilter>();
+            obj.AddComponent<MeshCollider>();
+            obj.GetComponent<MeshFilter>().mesh = importer.ImportFile(text);
+            obj.GetComponent<MeshFilter>().sharedMesh = obj.GetComponent<MeshFilter>().mesh;
+            obj.GetComponent<MeshFilter>().mesh.RecalculateNormals();
+            obj.GetComponent<MeshFilter>().mesh.RecalculateTangents();
+            obj.GetComponent<MeshFilter>().mesh.RecalculateBounds();
+            obj.GetComponent<MeshCollider>().sharedMesh = null;
+            obj.GetComponent<MeshCollider>().sharedMesh = obj.GetComponent<MeshFilter>().mesh;
+            obj.GetComponent<MeshCollider>().convex = false;
+            obj.GetComponent<MeshCollider>().enabled = true;
+            obj.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/defaultMat");
+            obj.GetComponent<Renderer>().enabled = true;
+            StartCoroutine(DownloadAnnotations(id,obj,offset,scale));
+        } 
     }
 
-    public ProjectInfoJson GetProjectList()
+    private IEnumerator DownloadAnnotations(string id,GameObject obj,Vector3 offset,float scale)
     {
-        string text = GetRequest("/info/projectsInfo");
-        projects = JsonUtility.FromJson<ProjectInfoJson>(text);
-        Debug.Log(text);
-        Debug.Log(projects.projects[0]._id);
-        return projects;
+        UnityWebRequest webop = CreateGetRequest("/" + id + "/_all_docs?include_docs=true");
+
+        yield return webop.SendWebRequest();
+        if (webop.isNetworkError && webop.responseCode != 200L)
+        {
+            Debug.Log(webop.error);
+        }
+        else
+        {
+            string text = webop.downloadHandler.text;
+            AnnotationResponseJson resp = JsonUtility.FromJson<AnnotationResponseJson>(text);
+            Dictionary<String, Annotation> annotations = new Dictionary<String, Annotation>();
+            foreach (AnnotationReponseValueJson r in resp.rows)
+            {
+                if (r.doc._id != "info" && r.doc._id != "topic_")
+                {
+                    annotations.Add(r.doc._id, r.doc);
+                }
+            }
+            AnnotatedObject annObj = new AnnotatedObject(obj, annotations, GameObject.Instantiate(annotationInfoBox));
+            annObj.annotatedObject.SetActive(true);
+            ObjectLoaded(annObj);
+        }
+    }
+
+    private IEnumerator DownloadProjectList()
+    {
+        UnityWebRequest webop = CreateGetRequest("/info/projectsInfo");
+        yield return webop.SendWebRequest();
+        if(webop.isNetworkError && webop.responseCode!=200L)
+        {
+            Debug.Log(webop.error);
+        }
+        else
+        {
+            string text = webop.downloadHandler.text;
+            projects = JsonUtility.FromJson<ProjectInfoJson>(text);
+            ProjectListLoaded(projects);
+            Debug.Log(text);
+            Debug.Log(projects.projects[0]._id);
+        }
     }
 
     // Use this for initialization
