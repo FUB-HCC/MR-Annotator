@@ -48,12 +48,12 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
         {
             string[] marker = mTrackableBehaviour.TrackableName.Split('-');
             GameObject nMarkBase = GameObject.Find("MarkerBases/" + marker[0]);
-            //GameObject nMarkBase = GameObject.Find("MarkerBases/" + "shuttle");
+            //GameObject nMarkBase = GameObject.Find("MarkerBases/" + "lamp");
             if (nMarkBase==null)
             {
                 GameObject markBases = GameObject.Find("MarkerBases");
                 nMarkBase = new GameObject(marker[0]);
-                //nMarkBase = new GameObject("shuttle");
+                //nMarkBase = new GameObject("lamp");
                 nMarkBase.transform.SetParent(markBases.transform);
                 nMarkBase.AddComponent<MarkerAugmentation>();
             }
@@ -62,8 +62,9 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
 
             markaug.trackerState[Int32.Parse(marker[1]), Int32.Parse(marker[2])] = true;
             markaug.trackerPos[Int32.Parse(marker[1]), Int32.Parse(marker[2])] = mTrackableBehaviour.transform.position;
-            //markaug.trackedObject = "shuttle";
+            //markaug.trackedObject = "lamp";
             markaug.trackedObject = marker[0];
+            markaug.wikiDataId = "http://www.wikidata.org/entity/"+ marker[3];
 
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
             OnTrackingFound();
@@ -73,13 +74,13 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
         {
             string[] marker = mTrackableBehaviour.TrackableName.Split('-');
             GameObject nMarkBase = GameObject.Find("MarkerBases/" + marker[0]);
-            //GameObject nMarkBase = GameObject.Find("MarkerBases/" + "shuttle");
+            //GameObject nMarkBase = GameObject.Find("MarkerBases/" + "lamp");
 
             if (nMarkBase == null)
             {
                 GameObject markBases = GameObject.Find("MarkerBases");
                 nMarkBase = new GameObject(marker[0]);
-                //nMarkBase = new GameObject("shuttle");
+                //nMarkBase = new GameObject("lamp");
                 nMarkBase.transform.SetParent(markBases.transform);
                 nMarkBase.AddComponent<MarkerAugmentation>();
             }
@@ -87,7 +88,8 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
             markaug.trackerState[Int32.Parse(marker[1]), Int32.Parse(marker[2])] = false;
             markaug.trackerPos[Int32.Parse(marker[1]), Int32.Parse(marker[2])] = mTrackableBehaviour.transform.position;
             markaug.trackedObject = marker[0];
-            //markaug.trackedObject = "shuttle";
+            markaug.wikiDataId = "http://www.wikidata.org/entity/" + marker[3];
+            //markaug.trackedObject = "lamp";
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
             OnTrackingLost();
         }
@@ -101,7 +103,8 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
             markaug.trackerState[Int32.Parse(marker[1]), Int32.Parse(marker[2])] = false;
             markaug.trackerPos[Int32.Parse(marker[1]), Int32.Parse(marker[2])] = mTrackableBehaviour.transform.position;
             markaug.trackedObject = marker[0];
-            //markaug.trackedObject = "shuttle";
+            markaug.wikiDataId = "http://www.wikidata.org/entity/" + marker[3];
+            //markaug.trackedObject = "lamp";
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
             OnTrackingLost();
         }

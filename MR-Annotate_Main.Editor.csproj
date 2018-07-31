@@ -281,6 +281,9 @@
     <Reference Include="UnityEngine.StandardEvents">
       <HintPath>Library\UnityAssemblies\UnityEngine.StandardEvents.dll</HintPath>
     </Reference>
+    <Reference Include="WikidataService">
+      <HintPath>Assets\Plugins\WikidataService.dll</HintPath>
+    </Reference>
     <Reference Include="WSAControllerPlugin">
       <HintPath>Assets\Plugins\WSAControllerPlugin.dll</HintPath>
     </Reference>

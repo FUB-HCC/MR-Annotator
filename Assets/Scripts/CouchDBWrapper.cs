@@ -62,16 +62,17 @@ public class AttachmentResponseJson
     public FileResponseJson file;
 }
 
-public class CouchDBWrapper : MonoBehaviour {
+/**
+ *Class that Wraps the communication of the ProcessAnnotator's CouchDB  
+ */
+public class CouchDBWrapper : IDataService {
     public string username;
     public string password;
     public string url;
 
-    public GameObject annotationInfoBox;
     public ProjectInfoJson projects;
-    public Action<ProjectInfoJson> ProjectListLoaded;
-    public Action<AnnotatedObject> ObjectLoaded;
 
+    //Create a Get Request for a specified uri
     private UnityWebRequest CreateGetRequest(string uri,bool data=false)
     {
         string authorization = username + ":" + password;
@@ -95,17 +96,23 @@ public class CouchDBWrapper : MonoBehaviour {
         return text;*/
     }
 
-    public void LoadObject(string id, string name,Transform parent,float scale,Vector3 offset)
+    public override void LoadObject(string id, string name,Transform parent,float scale,Vector3 offset)
     {
         //string text = GetRequest("/" + id + "/topic_/file");
         StartCoroutine(DownloadFile(id, name, parent, scale, offset));
     }
 
-    public void GetProjectList()
+    public override void LoadAnnotations(string id, string name, Transform parent, float scale, Vector3 offset)
+    {
+        StartCoroutine(DownloadAnnotations(id, name, offset, scale));
+    }
+
+    public override void GetProjectList()
     {
         StartCoroutine(DownloadProjectList());
     }
 
+    //Download a ModelFile from the CouchDB specified by id and name
     private IEnumerator DownloadFile(string id, string name, Transform parent,float scale,Vector3 offset)
     {
         //string text = GetRequest("/" + id + "/topic_/file");
@@ -126,7 +133,6 @@ public class CouchDBWrapper : MonoBehaviour {
             GameObject obj = new GameObject();
             obj.transform.parent = parent;
             obj.transform.localScale = new Vector3(scale, scale, scale);
-            obj.transform.position = offset;
             obj.name = name;
             obj.layer = 0;
             obj.AddComponent<MeshRenderer>();
@@ -137,17 +143,22 @@ public class CouchDBWrapper : MonoBehaviour {
             obj.GetComponent<MeshFilter>().mesh.RecalculateNormals();
             obj.GetComponent<MeshFilter>().mesh.RecalculateTangents();
             obj.GetComponent<MeshFilter>().mesh.RecalculateBounds();
+            obj.transform.position = offset + new Vector3(0.0f, scale*obj.GetComponent<MeshFilter>().mesh.bounds.extents.y, 0.0f);
+
             obj.GetComponent<MeshCollider>().sharedMesh = null;
             obj.GetComponent<MeshCollider>().sharedMesh = obj.GetComponent<MeshFilter>().mesh;
             obj.GetComponent<MeshCollider>().convex = false;
             obj.GetComponent<MeshCollider>().enabled = true;
             obj.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/defaultMat");
             obj.GetComponent<Renderer>().enabled = true;
-            StartCoroutine(DownloadAnnotations(id,obj,offset,scale));
+            obj.SetActive(true);
+            //Notify that Loading of Object was Successfull
+            ObjectLoaded(new KeyValuePair<string, GameObject>(name,obj));
         } 
     }
 
-    private IEnumerator DownloadAnnotations(string id,GameObject obj,Vector3 offset,float scale)
+    //Download Annotations for an object in the CouchDB specified by ID and name
+    private IEnumerator DownloadAnnotations(string id,string name,Vector3 offset,float scale)
     {
         UnityWebRequest webop = CreateGetRequest("/" + id + "/_all_docs?include_docs=true");
 
@@ -168,12 +179,12 @@ public class CouchDBWrapper : MonoBehaviour {
                     annotations.Add(r.doc._id, r.doc);
                 }
             }
-            AnnotatedObject annObj = new AnnotatedObject(obj, annotations, GameObject.Instantiate(annotationInfoBox));
-            annObj.annotatedObject.SetActive(true);
-            ObjectLoaded(annObj);
+            //Notify, that loading of Annotations was successfull
+            AnnotationsLoaded(new KeyValuePair<string, Dictionary<string, Annotation>>(name,annotations));
         }
     }
 
+    //Download the List of all available objects in the CouchDB
     private IEnumerator DownloadProjectList()
     {
         UnityWebRequest webop = CreateGetRequest("/info/projectsInfo");
@@ -184,20 +195,29 @@ public class CouchDBWrapper : MonoBehaviour {
         }
         else
         {
+            LinkedList<Project> projectList = new LinkedList<Project>();
             string text = webop.downloadHandler.text;
             projects = JsonUtility.FromJson<ProjectInfoJson>(text);
-            ProjectListLoaded(projects);
-            Debug.Log(text);
-            Debug.Log(projects.projects[0]._id);
+            foreach(ProjectJson p in projects.projects)
+            {
+                Project newProject = new Project();
+                newProject.id = p._id;
+                newProject.name = p.name;
+                newProject.provider = this;
+                projectList.AddFirst(newProject);
+            }
+            //Notify that Loading a List of all available Models was successfull
+            ProjectListLoaded(projectList);
         }
     }
 
-    // Use this for initialization
-    void Start () {
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    public override void InitService()
+    {
+
+    }
+
+    // Update is called once per frame
+    public override void UpdateService () {
 		
 	}
 }

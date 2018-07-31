@@ -113,13 +113,18 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &41276236 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1234107288122794, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+    type: 2}
+  m_PrefabInternal: {fileID: 1313733224}
 --- !u!21 &411513082
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: teapot_scan-0-1Material
+  m_Name: teapot_scan-0-1-Q1416664Material
   m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
@@ -132,7 +137,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 66286f4ea63e4a7c8fdb889f85176710, type: 3}
+        m_Texture: {fileID: 2800000, guid: e591eb329681496eaf971001b1e8a76d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats: []
@@ -332,6 +337,8 @@ GameObject:
   - component: {fileID: 639958020}
   - component: {fileID: 639958019}
   - component: {fileID: 639958021}
+  - component: {fileID: 639958022}
+  - component: {fileID: 639958023}
   m_Layer: 0
   m_Name: Holograms
   m_TagString: Untagged
@@ -350,6 +357,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a99662a74dc1b494683e5b1c58be5084, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  annotationInfoBox: {fileID: 41276236}
 --- !u!4 &639958017
 Transform:
   m_ObjectHideFlags: 0
@@ -387,11 +395,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85f84199dfd928e49810f7e30c616f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  annotationInfoBox: {fileID: 41276236}
   username: WladimirLeuschner
   password: Da0Gb2Dv0vAu1ifx
   url: http://141.20.168.11/
-  annotationInfoBox: {fileID: 1007907985751192, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-    type: 2}
   projects:
     _id: 
     _rev: 
@@ -421,6 +428,29 @@ MonoBehaviour:
   handheldControllerBridge: {fileID: 639009705}
   controllerDisplay: {fileID: 1755898372}
   lookAtPoint: {x: 0, y: 0, z: 0}
+--- !u!114 &639958022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 639958015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 134815acb54152d4a82b42a4f26413cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  annotationInfoBox: {fileID: 41276236}
+--- !u!114 &639958023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 639958015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d602b5d575aceb2499379573370afda2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &848865480 stripped
 Transform:
   m_PrefabParentObject: {fileID: 470424, guid: a32e698380a2afb418cd4099caac98fe, type: 2}
@@ -700,7 +730,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: teapot_scan-1-0Material
+  m_Name: teapot_scan-1-0-Q1416664Material
   m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
@@ -713,7 +743,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: ec18f0ad06954860a3ddc22e51d09275, type: 3}
+        m_Texture: {fileID: 2800000, guid: 61beccf493764c61894bc8a8d6881b50, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats: []
@@ -810,7 +840,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: teapot_scan-0-0Material
+  m_Name: teapot_scan-0-0-Q1416664Material
   m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
@@ -823,7 +853,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: aa3ec4e0de7a463da1cdf66f80645f74, type: 3}
+        m_Texture: {fileID: 2800000, guid: cab755867c664fad8d982bb562323887, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats: []
@@ -994,7 +1024,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: teapot_scan-1-1Material
+  m_Name: teapot_scan-1-1-Q1416664Material
   m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
@@ -1007,7 +1037,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 25be8e1e62244031a939e2518c0e35a4, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2a21c7c79ec74197abf2c98abd703387, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats: []
@@ -1078,6 +1108,132 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1001 &1313733224
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 508
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 345
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224438515109895918, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 223965439159761210, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 865216465}
+    - target: {fileID: 4299358541185518, guid: 1b010ecc8c5a7d74d9cbca290014ec21, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4299358541185518, guid: 1b010ecc8c5a7d74d9cbca290014ec21, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4299358541185518, guid: 1b010ecc8c5a7d74d9cbca290014ec21, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 120284665595725598, guid: 1b010ecc8c5a7d74d9cbca290014ec21,
+        type: 2}
+      propertyPath: m_UseWorldSpace
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1234107288122794, guid: 1b010ecc8c5a7d74d9cbca290014ec21, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 1b010ecc8c5a7d74d9cbca290014ec21, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1356776863
 GameObject:
   m_ObjectHideFlags: 0
@@ -1138,6 +1294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trackedObject: 
+  wikiDataId: 
 --- !u!1 &1419795655
 GameObject:
   m_ObjectHideFlags: 0
@@ -1250,7 +1407,7 @@ Transform:
   m_GameObject: {fileID: 1453097553}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 2.8065863, y: -1.3599503, z: 1.5148903}
-  m_LocalScale: {x: 0.045, y: 0.045, z: 0.045}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_Children:
   - {fileID: 943570486}
   m_Father: {fileID: 1356776865}
@@ -1330,15 +1487,15 @@ MonoBehaviour:
   m_Script: {fileID: -1631628248, guid: bab6fa851cf5a1a4bba3cec5f191cb8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mTrackableName: teapot_scan-1-1
+  mTrackableName: teapot_scan-1-1-Q1416664
   mPreserveChildSize: 0
   mInitializedInEditor: 1
   mDataSetPath: Vuforia/QrCodeTracking.xml
   mExtendedTracking: 0
   mAspectRatio: 1
   mImageTargetType: 0
-  mWidth: 0.045
-  mHeight: 0.045
+  mWidth: 0.02
+  mHeight: 0.02
 --- !u!1 &1480076423
 GameObject:
   m_ObjectHideFlags: 0
@@ -1367,7 +1524,7 @@ Transform:
   m_GameObject: {fileID: 1480076423}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 2.8065863, y: -1.3599503, z: 1.5148903}
-  m_LocalScale: {x: 0.045, y: 0.045, z: 0.045}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_Children:
   - {fileID: 997859028}
   m_Father: {fileID: 1356776865}
@@ -1447,15 +1604,15 @@ MonoBehaviour:
   m_Script: {fileID: -1631628248, guid: bab6fa851cf5a1a4bba3cec5f191cb8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mTrackableName: teapot_scan-0-1
+  mTrackableName: teapot_scan-0-1-Q1416664
   mPreserveChildSize: 0
   mInitializedInEditor: 1
   mDataSetPath: Vuforia/QrCodeTracking.xml
   mExtendedTracking: 0
   mAspectRatio: 1
   mImageTargetType: 0
-  mWidth: 0.045
-  mHeight: 0.045
+  mWidth: 0.02
+  mHeight: 0.02
 --- !u!1 &1631873591
 GameObject:
   m_ObjectHideFlags: 0
@@ -1484,7 +1641,7 @@ Transform:
   m_GameObject: {fileID: 1631873591}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 2.8065863, y: -1.3599503, z: 1.5148903}
-  m_LocalScale: {x: 0.045, y: 0.045, z: 0.045}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_Children:
   - {fileID: 1773966510}
   m_Father: {fileID: 1356776865}
@@ -1564,15 +1721,15 @@ MonoBehaviour:
   m_Script: {fileID: -1631628248, guid: bab6fa851cf5a1a4bba3cec5f191cb8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mTrackableName: teapot_scan-1-0
+  mTrackableName: teapot_scan-1-0-Q1416664
   mPreserveChildSize: 0
   mInitializedInEditor: 1
   mDataSetPath: Vuforia/QrCodeTracking.xml
   mExtendedTracking: 0
   mAspectRatio: 1
   mImageTargetType: 0
-  mWidth: 0.045
-  mHeight: 0.045
+  mWidth: 0.02
+  mHeight: 0.02
 --- !u!43 &1683026764
 Mesh:
   m_ObjectHideFlags: 0
@@ -2055,106 +2212,6 @@ Mesh:
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshOptimized: 0
---- !u!1001 &1985619272
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_RootOrder
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: 254
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_AnchoredPosition.y
-      value: 172.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_SizeDelta.x
-      value: 508
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_SizeDelta.y
-      value: 345
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_Pivot.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 224327877030476600, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2,
-        type: 2}
-      propertyPath: m_Pivot.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 0c0a32fa1935cf34aaeb1bd09a184ce2, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &1991912830
 GameObject:
   m_ObjectHideFlags: 0
@@ -2341,7 +2398,7 @@ Transform:
   m_GameObject: {fileID: 2139732150}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 2.8065863, y: -1.3599503, z: 1.5148903}
-  m_LocalScale: {x: 0.045, y: 0.045, z: 0.045}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_Children:
   - {fileID: 1419795656}
   m_Father: {fileID: 1356776865}
@@ -2421,12 +2478,12 @@ MonoBehaviour:
   m_Script: {fileID: -1631628248, guid: bab6fa851cf5a1a4bba3cec5f191cb8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mTrackableName: teapot_scan-0-0
+  mTrackableName: teapot_scan-0-0-Q1416664
   mPreserveChildSize: 0
   mInitializedInEditor: 1
   mDataSetPath: Vuforia/QrCodeTracking.xml
   mExtendedTracking: 0
   mAspectRatio: 1
   mImageTargetType: 0
-  mWidth: 0.045
-  mHeight: 0.045
+  mWidth: 0.02
+  mHeight: 0.02

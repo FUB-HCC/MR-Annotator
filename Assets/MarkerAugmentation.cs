@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Vuforia;
 
 public class MarkerAugmentation : MonoBehaviour {
     public Vector3[,] trackerPos = new Vector3[2, 2];
     public bool[,] trackerState = new bool[2,2] {{false,false},{false,false}};
     public string trackedObject = "";
-    public AnnotatedObject target;
+    public string wikiDataId = "";
 
 	// Use this for initialization
 	void Start () {
@@ -18,22 +19,16 @@ public class MarkerAugmentation : MonoBehaviour {
         {
             if (!GameObject.Find("Holograms").GetComponent<GameObjectManager>().ObjectExists(trackedObject))
             {
-                GameObject.Find("Holograms").GetComponent<GameObjectManager>().SpawnObject(trackedObject, trackerPos[0, 0] + 0.5f * (trackerPos[1, 1] - trackerPos[0, 0]), 0.001f);
-            }
-            else
-            {
-                target = GameObject.Find("Holograms").GetComponent<GameObjectManager>().GetObject(trackedObject);
+                GameObject.Find("Holograms").GetComponent<GameObjectManager>().SpawnObject(trackedObject, wikiDataId, trackerPos[0, 0] + 0.5f * (trackerPos[1, 1] - trackerPos[0, 0]), 0.001f);
+                VuforiaBehaviour.Instance.enabled = false;
             }
         }
         else if(trackerState[0, 1] && trackerState[1, 0])
         {
             if (!GameObject.Find("Holograms").GetComponent<GameObjectManager>().ObjectExists(trackedObject))
             {
-                GameObject.Find("Holograms").GetComponent<GameObjectManager>().SpawnObject(trackedObject, trackerPos[0, 1] + 0.5f * (trackerPos[1, 0] - trackerPos[0, 1]), 0.001f);
-            }
-            else
-            {
-                target = GameObject.Find("Holograms").GetComponent<GameObjectManager>().GetObject(trackedObject);
+                GameObject.Find("Holograms").GetComponent<GameObjectManager>().SpawnObject(trackedObject, wikiDataId, trackerPos[0, 1] + 0.5f * (trackerPos[1, 0] - trackerPos[0, 1]), 0.001f);
+                VuforiaBehaviour.Instance.enabled = false;
             }
         }
         else

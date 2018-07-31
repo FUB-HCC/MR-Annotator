@@ -16,19 +16,7 @@ public class SpeechManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         parent = GameObject.Find("Holograms");
-        //ProjectInfoJson projects = parent.GetComponent<CouchDBWrapper>().GetProjectList();
-        /*foreach (ProjectJson p in projects.projects)
-        {
-            Debug.Log(p.name);
-            keywords.Add("Spawn " + p.name,()=> 
-            {
-                parent.GetComponent<GameObjectManager>().SpawnObject(p.name);
-            });
-            keywords.Add("Destroy " + p.name, () =>
-            {
-                parent.GetComponent<GameObjectManager>().DeleteObject(p.name);
-            });
-        }*/
+        parent.GetComponent<GameObjectManager>().updateSpeechManagerProjects = updateSpeechManagerProjects;
 
         keywords.Add("Reset Annotator", () =>
         {
@@ -164,10 +152,40 @@ public class SpeechManager : MonoBehaviour {
         keywordRecognizer.Start();
 	}
 
+    private void updateSpeechManagerProjects(LinkedList<Project> projects)
+    {
+        keywordRecognizer.Stop();
+        foreach (Project p in projects)
+        {
+            Debug.Log(p.name);
+            if (!keywords.ContainsKey("Spawn " + p.name))
+            {
+                keywords.Add("Spawn " + p.name, () =>
+                 {
+                     parent.GetComponent<GameObjectManager>().SpawnObject(p.name, p.id, new Vector3(0.0f, 0.0f, 0.3f), 0.001f);
+                 });
+            }
+            if (!keywords.ContainsKey("Destroy " + p.name))
+            {
+                keywords.Add("Destroy " + p.name, () =>
+                {
+                    parent.GetComponent<GameObjectManager>().DeleteObject(p.name);
+                });
+            }
+        }
+        keywordRecognizer = new KeywordRecognizer(keywords.Keys.ToArray());
+        keywordRecognizer.OnPhraseRecognized += onKeywordRecognized;
+        keywordRecognizer.Start();
+        Debug.Log(keywordRecognizer.IsRunning);
+    }
+
     public void addAnnotation(String name, Vector3 pos)
     {
         GameObject ActiveSelection = parent.GetComponentInChildren<QuickExampleController>().ActiveSelection;
-        PhraseRecognitionSystem.Shutdown();
+        if (keywordRecognizer.IsRunning)
+        {
+            PhraseRecognitionSystem.Shutdown();
+        }
         String dictationResult = "";
 
         String annotationId = parent.GetComponent<GameObjectManager>().createAnnotation(ActiveSelection.name, pos, dictationResult);

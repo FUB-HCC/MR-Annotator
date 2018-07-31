@@ -4,60 +4,110 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/**
+ * Class representing an Annotated Object. Holds the virtual representation of a physical object in a Gameobject.
+ * A Dictonary of pairs of annotation ids and Annotations hold the actual Annotations
+ */
 public class AnnotatedObject {
+    public string name;
     public GameObject annotatedObject;
     public Dictionary<String,Annotation> annotations = new Dictionary<String,Annotation>();
     public bool showAnnotations;
 
-    public AnnotatedObject(GameObject obj,Dictionary<String,Annotation> annotations,GameObject annotationInfoBox)
+    //Create an empty Annotated Object without mesh and Annotations but with a name to identify
+    public AnnotatedObject(String name)
+    {
+        this.name = name;
+        this.annotatedObject = null;
+        this.annotations = null;
+    }
+
+    //Create an Annotated Object from a GameObject that holds the virutal representation of a physical Object,
+    //a Dictonary of Annotations and a AnnotationInfoBox to visualize the actual annotations.
+    public AnnotatedObject(GameObject obj,Dictionary<String,Annotation> annotations,GameObject annotationInfoBoxPrefab)
     {
         this.annotatedObject = obj;
         this.annotations = annotations;
 
         GameObject annotationContainer = new GameObject("Annotations");
+
         annotationContainer.transform.parent = annotatedObject.transform;
 
         //Create Anchors on Objects from existing Annotations
-        List<Vector3> anchorVerts = new List<Vector3>();
-        List<int> anchorIdx = new List<int>();
-        List<Color> colors = new List<Color>();
         foreach(Annotation a in annotations.Values)
         {
             GameObject cont = new GameObject();
             cont.name = a._id;
             cont.transform.parent = annotationContainer.transform;
-            GameObject annotationAnchor = new GameObject();
-            TextMesh annotationText = annotationAnchor.AddComponent<TextMesh>();
+            cont.transform.position = a.localPosition;
 
             //Create GUI
-            Canvas annotationCanvas = cont.AddComponent<Canvas>();
-            annotationCanvas.worldCamera = Camera.main;
-            annotationCanvas.name = "Canvas";
-            annotationCanvas.renderMode = RenderMode.WorldSpace;
-            annotationCanvas.transform.parent = cont.transform;
-            annotationCanvas.transform.position = a.localPosition;
-            annotationCanvas.enabled = true;
+            GameObject annotationInfoBox = GameObject.Instantiate(annotationInfoBoxPrefab);
+            annotationInfoBox.SetActive(true);
+            annotationInfoBox.name = "AnnotationBox";
+            annotationInfoBox.GetComponent<Canvas>().worldCamera = Camera.main;
+            annotationInfoBox.GetComponent<RectTransform>().parent = cont.transform;
+            annotationInfoBox.GetComponent<RectTransform>().localScale = new Vector3(0.0002f, 0.0002f, 0.0002f);
+            Vector3 dir = (0.01f * a.localPosition - 0.01f*annotatedObject.GetComponent<MeshFilter>().mesh.bounds.center).normalized;
+            //Just create Annotationboxes above the actual annotation Anchor
+            if(dir.y<0.0f)
+            {
+                dir.y = 0.3f;
+                dir = dir.normalized;
+            }
+            annotationInfoBox.GetComponent<RectTransform>().position = annotatedObject.transform.position+(0.01f*a.localCameraPosition + 0.01f*1.5f*annotatedObject.GetComponent<MeshFilter>().mesh.bounds.extents.magnitude*dir);
 
-            Text annotationLabel = cont.AddComponent<Text>();
-            annotationLabel.name = "Text";
-            annotationLabel.transform.parent = cont.transform;
-            annotationLabel.text = a.description;
-            annotationLabel.color = Color.blue;
-            annotationLabel.enabled = true;
-
-            annotationText.name = "Text";
-            annotationText.transform.parent = cont.transform;
-            annotationText.text = /*a.description*/"";
-            annotationText.color = Color.red;
-            annotationText.transform.position = a.localPosition;
-            annotationText.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            annotationAnchor = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            annotationAnchor.name = "Anchor";
-            annotationAnchor.transform.parent = cont.transform;
-            annotationAnchor.transform.position = a.localPosition;
-            annotationAnchor.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            anchorVerts.Add(a.localPosition);
+            annotationInfoBox.GetComponent<AnnotationBoxBehaviour>().annObj = this;
+            annotationInfoBox.GetComponent<AnnotationBoxBehaviour>().SetPosition(a.localPosition);
+            annotationInfoBox.GetComponent<AnnotationBoxBehaviour>().SetHeader(a.creationDate);
+            annotationInfoBox.GetComponent<AnnotationBoxBehaviour>().SetContent(a.description);
         }
+        annotationContainer.transform.parent.GetComponent<MeshRenderer>().enabled = true;
+    }
+
+    public void setObject(GameObject obj)
+    {
+        this.annotatedObject = obj;
+        GameObject annotationContainer = new GameObject("Annotations");
+        annotationContainer.transform.parent = annotatedObject.transform;
+    }
+
+    public void addAnnotations(Dictionary<string,Annotation> annotations, GameObject annotationInfoBoxPrefab)
+    {
+        this.annotations = annotations;
+        GameObject annotationContainer = GameObject.Find(annotatedObject.name+"/Annotations");
+        annotationContainer.transform.parent = annotatedObject.transform;
+
+        //Create Anchors on Objects from existing Annotations
+        foreach (Annotation a in annotations.Values)
+        {
+            GameObject cont = new GameObject();
+            cont.name = a._id;
+            cont.transform.parent = annotationContainer.transform;
+            cont.transform.position = a.localPosition;
+
+            //Create GUI
+            GameObject annotationInfoBox = GameObject.Instantiate(annotationInfoBoxPrefab);
+            annotationInfoBox.SetActive(true);
+            annotationInfoBox.name = "AnnotationBox";
+            annotationInfoBox.GetComponent<Canvas>().worldCamera = Camera.main;
+            annotationInfoBox.GetComponent<RectTransform>().parent = cont.transform;
+            annotationInfoBox.GetComponent<RectTransform>().localScale = new Vector3(0.0002f, 0.0002f, 0.0002f);
+            Vector3 dir = (0.01f * a.localPosition - 0.01f * annotatedObject.GetComponent<MeshFilter>().mesh.bounds.center).normalized;
+            //Just create Annotationboxes above the actual annotation Anchor
+            if (dir.y < 0.0f)
+            {
+                dir.y = 0.3f;
+                dir = dir.normalized;
+            }
+            annotationInfoBox.GetComponent<RectTransform>().position = annotatedObject.transform.position + (0.001f * a.localPosition + 0.001f * 1.5f * annotatedObject.GetComponent<MeshFilter>().mesh.bounds.extents.magnitude * dir);
+
+            annotationInfoBox.GetComponent<AnnotationBoxBehaviour>().annObj = this;
+            annotationInfoBox.GetComponent<AnnotationBoxBehaviour>().SetPosition(a.localPosition);
+            annotationInfoBox.GetComponent<AnnotationBoxBehaviour>().SetHeader(a._id);
+            annotationInfoBox.GetComponent<AnnotationBoxBehaviour>().SetContent(a.description);
+        }
+        annotationContainer.transform.parent.GetComponent<MeshRenderer>().enabled = true;
     }
 
     public void deleteAnnotation(String id)
@@ -69,57 +119,51 @@ public class AnnotatedObject {
     {
         Debug.Log("Annotated Object");
         annotations[id].description = text;
-        GameObject annotationText = annotatedObject.transform.Find("Annotations/" + id + "/Text").gameObject;
-        annotationText.GetComponent<TextMesh>().text = text;
+        annotatedObject.transform.Find("Annotations/" + id + "/AnnotationBox").gameObject.GetComponent<AnnotationBoxBehaviour>().SetContent(text);
     }
 
-    public String addAnnotation(Vector3 pos,String text)
+    public String addAnnotation(Vector3 pos,String text, GameObject annotationInfoBoxPrefab)
     {
-        List<Vector3> anchorVerts = new List<Vector3>();
-        List<int> anchorIdx = new List<int>();
-        List<Color> colors = new List<Color>();
         //TODO Fill Annotation Structure
         Annotation annotation = new Annotation();
         annotation._id = System.Guid.NewGuid().ToString();
         annotation.created = DateTime.Now.ToUniversalTime().ToString();
         annotation.creationDate = annotation.created;
         annotation.description = text;
-        annotation.localPosition = pos;
+        annotation.localPosition = pos - annotatedObject.transform.position;
         annotations.Add(annotation._id, annotation);
 
-        GameObject container = annotatedObject.transform.Find("Annotations").gameObject;
+        GameObject annotationContainer = GameObject.Find(annotatedObject.name + "/Annotations");
+        annotationContainer.transform.parent = annotatedObject.transform;
+
         GameObject cont = new GameObject();
-        cont.transform.parent = container.transform;
         cont.name = annotation._id;
-        GameObject annotationAnchor = new GameObject();
+        cont.transform.parent = annotationContainer.transform;
+        cont.transform.position = annotation.localPosition;
+
         //Create GUI
-        Canvas annotationCanvas = cont.AddComponent<Canvas>();
-        annotationCanvas.worldCamera = Camera.main;
-        annotationCanvas.name = "Canvas";
-        annotationCanvas.renderMode = RenderMode.WorldSpace;
-        annotationCanvas.transform.parent = cont.transform;
-        annotationCanvas.transform.position = pos;
-        annotationCanvas.enabled = true;
+        GameObject annotationInfoBox = GameObject.Instantiate(annotationInfoBoxPrefab);
+        annotationInfoBox.SetActive(true);
+        annotationInfoBox.name = "AnnotationBox";
+        annotationInfoBox.GetComponent<Canvas>().worldCamera = Camera.main;
+        annotationInfoBox.GetComponent<RectTransform>().parent = cont.transform;
+        annotationInfoBox.GetComponent<RectTransform>().localScale = new Vector3(0.0002f, 0.0002f, 0.0002f);
+        Vector3 dir = (0.01f * annotation.localPosition - 0.01f * annotatedObject.GetComponent<MeshFilter>().mesh.bounds.center).normalized;
+        //Just create Annotationboxes above the actual annotation Anchor
+        if (dir.y < 0.0f)
+        {
+            dir.y = 0.3f;
+            dir = dir.normalized;
+        }
+        annotationInfoBox.GetComponent<RectTransform>().position = annotatedObject.transform.position + (0.001f * annotation.localPosition + 0.001f * 1.5f * annotatedObject.GetComponent<MeshFilter>().mesh.bounds.extents.magnitude * dir);
 
-        Text annotationLabel = cont.AddComponent<Text>();
-        annotationLabel.name = "Text";
-        annotationLabel.transform.parent = cont.transform;
-        annotationLabel.text = text;
-        annotationLabel.color = Color.blue;
-        annotationLabel.enabled = true;
+        annotationInfoBox.GetComponent<AnnotationBoxBehaviour>().annObj = this;
+        annotationInfoBox.GetComponent<AnnotationBoxBehaviour>().SetPosition(annotation.localPosition);
+        annotationInfoBox.GetComponent<AnnotationBoxBehaviour>().SetHeader(annotation._id);
+        annotationInfoBox.GetComponent<AnnotationBoxBehaviour>().SetContent(annotation.description);
 
-        //TextMesh annotationText = cont.AddComponent<TextMesh>();
-        //annotationText.name = "Text";
-        //annotationText.transform.parent = cont.transform;
-        //annotationText.text = /*text*/"";
-        //annotationText.color = Color.red;
-        //annotationText.transform.position = pos;
-        //annotationText.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        //annotationAnchor = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        //annotationAnchor.name = "Anchor";
-        //annotationAnchor.transform.parent = cont.transform;
-        //annotationAnchor.transform.position = pos;
-        //annotationAnchor.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        annotationContainer.transform.parent.GetComponent<MeshRenderer>().enabled = true;
+
 
         return annotation._id;
     }

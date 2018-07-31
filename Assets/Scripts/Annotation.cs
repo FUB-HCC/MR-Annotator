@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/**
+ * Class that represents an Annotation
+ */
 [System.Serializable]
 public class Annotation {
-    public string _id;
-    public string _rev;
-    public string type;
+    public string _id; //Annotation ID
+    public string _rev; //Annotation revision
+    public string type; //Annotation type
     public string status;
     public string motivation;
     public string[] responses;

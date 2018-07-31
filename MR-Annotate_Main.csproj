@@ -281,6 +281,9 @@
     <Reference Include="UnityEngine.StandardEvents">
       <HintPath>Library\UnityAssemblies\UnityEngine.StandardEvents.dll</HintPath>
     </Reference>
+    <Reference Include="WikidataService">
+      <HintPath>Assets\Plugins\WikidataService.dll</HintPath>
+    </Reference>
     <Reference Include="WSAControllerPlugin">
       <HintPath>Assets\Plugins\WSAControllerPlugin.dll</HintPath>
     </Reference>
@@ -289,14 +292,19 @@
     <Compile Include="Assets\MarkerAugmentation.cs" />
     <Compile Include="Assets\Scripts\AnnotatedObject.cs" />
     <Compile Include="Assets\Scripts\Annotation.cs" />
-    <Compile Include="Assets\Scripts\CoRoutineWithData.cs" />
+    <Compile Include="Assets\Scripts\AnnotationBoxBehaviour.cs" />
     <Compile Include="Assets\Scripts\CouchDBWrapper.cs" />
+    <Compile Include="Assets\Scripts\DBPediaWrapper.cs" />
     <Compile Include="Assets\Scripts\GameObjectManager.cs" />
     <Compile Include="Assets\Scripts\GestureManager.cs" />
     <Compile Include="Assets\Scripts\HandheldControllerBridge.cs" />
+    <Compile Include="Assets\Scripts\IDataService.cs" />
     <Compile Include="Assets\Scripts\ObjImporter.cs" />
+    <Compile Include="Assets\Scripts\Project.cs" />
     <Compile Include="Assets\Scripts\QuickExampleController.cs" />
     <Compile Include="Assets\Scripts\SpeechManager.cs" />
+    <Compile Include="Assets\Scripts\StlImporter.cs" />
+    <Compile Include="Assets\Scripts\WikiDataWrapper.cs" />
     <Compile Include="Assets\Scripts\WorldCursor.cs" />
     <Compile Include="Assets\Vuforia\Scripts\DefaultInitializationErrorHandler.cs" />
     <Compile Include="Assets\Vuforia\Scripts\DefaultTrackableEventHandler.cs" />

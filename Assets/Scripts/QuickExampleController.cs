@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using WSAControllerPlugin;
 using UnityEngine.Windows.Speech;
-using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
@@ -96,6 +95,13 @@ public class QuickExampleController : MonoBehaviour
 
     void Start()
     {
+        /*WikidataService.Wikidata wd = new WikidataService.Wikidata();
+        LinkedList<String> resp = wd.Query();
+        foreach (String s in resp)
+        {
+            Debug.Log(s);
+        }*/
+
         Debug.Log("Started Daydream Controller");
         // Get a reference to the HandheldControllerBridge Monobehaviour
         _controllerBridge = handheldControllerBridge.GetComponent<HandheldControllerBridge>();
@@ -188,30 +194,29 @@ public class QuickExampleController : MonoBehaviour
             controllerDisplay.transform.rotation = rot;
             GameObject markBases = GameObject.Find("MarkerBases");
             MarkerAugmentation[] bases = markBases.GetComponentsInChildren<MarkerAugmentation>();
-            MarkerAugmentation maug = null;
+            AnnotatedObject target = null;
             float dist = float.PositiveInfinity;
+            //Find the Markerbase that is closest in distance to actual position
             foreach (MarkerAugmentation b in bases)
             {
-                if (b.target != null)
+                AnnotatedObject obj = GameObject.Find("Holograms").GetComponent<GameObjectManager>().GetObject(b.name);
+                if (obj != null && obj.annotatedObject!=null)
                 {
-                    Vector3 targetPos = b.target.annotatedObject.transform.position;
+                    Vector3 targetPos = obj.annotatedObject.transform.position;
                     Vector3 camPos = Camera.main.transform.position;
                     float distCamPosSqr = (camPos - targetPos).sqrMagnitude;
                     if (dist > distCamPosSqr)
                     {
-                        maug = b;
+                        target = obj;
                         dist = distCamPosSqr;
                     }
                 }
             }
-            if (maug != null)
+            //If a Markerbase was found, center the Controller onto the virtual object on a sphere boundary
+            if (target != null)
             {
-                AnnotatedObject target = maug.target;
-                if (target != null)
-                {
-                    Bounds bounds = target.annotatedObject.GetComponentInChildren<MeshRenderer>().bounds;
-                    controllerDisplay.transform.position = bounds.center - rot * new Vector3(0.0f, 0.0f, bounds.extents.magnitude*1.5f);
-                }
+                Bounds bounds = target.annotatedObject.GetComponentInChildren<MeshRenderer>().bounds;
+                controllerDisplay.transform.position = bounds.center - rot * new Vector3(0.0f, 0.0f, bounds.extents.magnitude*1.5f);
             }
         }
         else
@@ -267,8 +272,6 @@ public class QuickExampleController : MonoBehaviour
     {
         if (activeSelection != null && !activeSelection.name.Contains("spatial-mapping-surface"))
         {
-            //parent.GetComponent<GameObjectManager>().hideAnnotations(ActiveSelection.name, showAnnotations);
-            //parent.GetComponent<GameObjectManager>().createAnnotation(ActiveSelection.name, lookAtPoint, "Test");
             parent.GetComponent<SpeechManager>().addAnnotation(activeSelection.name, lookAtPoint);
         }
     }
